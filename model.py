@@ -9,7 +9,12 @@ from keras.models import Sequential, Model
 # discriminator = Sequential()
 
 def build_generator():
+  """
+  Here is a Construct a Convolutional Neural Network (CNN) architecture for a generator model within a Generative Adversarial Network (GAN).
   
+  """
+
+  # Create a Sequential model for generator
   generator = Sequential()
   
   generator.add(Dense(6272, activation="relu", input_dim=100)) # Add dense layer
@@ -41,12 +46,19 @@ def build_generator():
 
 
 def build_discriminator():
+  """
+   Here is a Construct a Convolutional Neural Network (CNN) architecture for a discriminator model within a Generative Adversarial Network (GAN).
+  """
 
+  # Create a Sequential model for discriminator
   discriminator = Sequential()
+
+  # Convolutional 2D layers with LeakyReLU activation function and Dropout layer
   discriminator.add(Conv2D(32, kernel_size=3, strides=2, input_shape=(28,28,1), padding="same"))
   discriminator.add(LeakyReLU(alpha=0.2))
   discriminator.add(Dropout(0.25))
-  
+
+  # Convolutional 2D layers with BatchNormalization function and ZeroPadding layer
   discriminator.add(Conv2D(64, kernel_size=3, strides=2,padding="same"))
   discriminator.add(ZeroPadding2D(padding=((0,1),(0,1))))
   discriminator.add(BatchNormalization(momentum=0.8))
@@ -63,12 +75,19 @@ def build_discriminator():
   discriminator.add(BatchNormalization(momentum=0.8))
   discriminator.add(LeakyReLU(alpha=0.2))
   discriminator.add(Dropout(0.25))
-  
+
+  # Flattens the 3D output of the convolutional layers into a 1D vector for dense layers.
   discriminator.add(Flatten())
+
+  # Adds a dense layer with a single unit and sigmoid activation function to output a probability (real or fake image).
   discriminator.add(Dense(1, activation='sigmoid'))
   
+  # Input layer for the discriminator
   img = Input(shape=(28,28,1))
+
+  # Obtain the probability of the input image being real from the discriminator
   probability = discriminator(img)
- 
+
+  # Create and return the Model
   return Model(inputs=img, outputs=probability)
 
